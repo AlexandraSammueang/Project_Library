@@ -6,6 +6,8 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
     internal class Program
     {
         static string connString = @"data source =.\SQLEXPRESS; initial catalog= Bibliotek; persist security info=true; integrated security = true;";
+
+        //Scaffold-DbContext "Server=.\SQLExpress;Database=Bibliotek;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
         static void Main(string[] args)
         {
             Console.WriteLine("Skriv ut alla ISBN från databas med Dapper:");
