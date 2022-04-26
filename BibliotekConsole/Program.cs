@@ -199,16 +199,16 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
                 //            Isbn = x.Isbn
                 //        }).ToList();
                 //    }
-                userPassword = context.Users.Where(x => x.Username == userName).Select(x => new User() { Password = x.Password}).ToList();
-                Console.WriteLine($"User password, encrypted: {userPassword[0].Password}");
-                
-                if (userName.Any())
+                userPassword = context.Users.Where(x => x.Username == userName).Select(x => new User() { Password = x.Password }).ToList();
+                var usernameToCheck = context.Users.Where(x => x.Username == userName);
+                if (usernameToCheck.Any())
                 {
+                    Console.WriteLine($"User password, encrypted: {userPassword[0].Password}");
                     do
                     {
                         Console.Write("Lösenord: ");
                         string password = Console.ReadLine();
-                        bool correctPassword = BCrypt.Net.BCrypt.Verify(password, userPassword[0].Password );
+                        bool correctPassword = BCrypt.Net.BCrypt.Verify(password, userPassword[0].Password);
                         if (correctPassword == true)
                         {
                             Console.Clear();
