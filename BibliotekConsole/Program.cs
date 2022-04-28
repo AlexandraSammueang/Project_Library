@@ -23,6 +23,16 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
             var listLINQ = GetISBNLINQ();
             foreach (var item in listLINQ)
                 Console.WriteLine(item.Isbn);
+
+            Console.WriteLine("Böcker och lagersaldo");
+
+            var product = getproduct();
+            foreach (var item in product)
+                Console.WriteLine($"Titel:{item.ProductName} finns som e-bock {item.EVersion}");
+            
+
+
+
         }
         public static List<Product> GetISBNDapper()
         {
@@ -35,6 +45,20 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
             }
             return ISBNList;
         }
+
+        public static List<Product> getproduct()
+        {
+            var productlist = new List<Product>();
+            //var sql = "select * from Products";
+            var everison = "SELECT * from Products where E_Version = 1";
+            using (var connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                productlist = connection.Query<Product>(everison).ToList();
+            }
+            return productlist;
+        }
+
 
         public static List<Product> GetISBNLINQ()
         {
