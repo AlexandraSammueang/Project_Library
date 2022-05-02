@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BibliotekConsole.DBModels
+namespace BibliotekConsole.Models
 {
     public partial class Order
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BibliotekConsole.DBModels
+namespace BibliotekConsole.Models
 {
     public partial class User
     {
@@ -22,6 +22,7 @@ namespace BibliotekConsole.DBModels
         public string? City { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
+        public string? UserGroup { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

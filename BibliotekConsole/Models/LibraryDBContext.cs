@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace BibliotekConsole.DBModels
+namespace BibliotekConsole.Models
 {
-    public partial class BibliotekContext : DbContext
+    public partial class LibraryDBContext : DbContext
     {
-        public BibliotekContext()
+        public LibraryDBContext()
         {
         }
 
-        public BibliotekContext(DbContextOptions<BibliotekContext> options)
+        public LibraryDBContext(DbContextOptions<LibraryDBContext> options)
             : base(options)
         {
         }
 
         public virtual DbSet<Author> Authors { get; set; } = null!;
-        public virtual DbSet<Book> Books { get; set; } = null!;
-        public virtual DbSet<MasterAdmin> MasterAdmins { get; set; } = null!;
-        public virtual DbSet<MidAdmin> MidAdmins { get; set; } = null!;
+        public virtual DbSet<Director> Directors { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductCategory> ProductCategories { get; set; } = null!;
+        public virtual DbSet<ProductType> ProductTypes { get; set; } = null!;
         public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
@@ -32,7 +31,7 @@ namespace BibliotekConsole.DBModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Bibliotek;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=tcp:newtonlibrary.database.windows.net,1433;Initial Catalog=LibraryDB;Persist Security Info=False;User ID=teammars;Password=!ilY7e&L$X6Sbr6;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -51,70 +50,17 @@ namespace BibliotekConsole.DBModels
                 entity.Property(e => e.Lastname).HasMaxLength(20);
             });
 
-            modelBuilder.Entity<Book>(entity =>
+            modelBuilder.Entity<Director>(entity =>
             {
-                entity.HasNoKey();
+                entity.ToTable("Director");
 
-                entity.Property(e => e.AuthorId).HasColumnName("AuthorID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.EVersion).HasColumnName("E_Version");
+                entity.Property(e => e.Birthday).HasColumnType("date");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("ID");
+                entity.Property(e => e.Firstname).HasMaxLength(20);
 
-                entity.Property(e => e.Isbn)
-                    .HasMaxLength(13)
-                    .HasColumnName("ISBN");
-
-                entity.Property(e => e.ReleaseDate).HasColumnType("date");
-
-                entity.Property(e => e.Title).HasMaxLength(20);
-
-                entity.HasOne(d => d.Author)
-                    .WithMany()
-                    .HasForeignKey(d => d.AuthorId)
-                    .HasConstraintName("FK_Books");
-            });
-
-            modelBuilder.Entity<MasterAdmin>(entity =>
-            {
-                entity.HasKey(e => e.Username)
-                    .HasName("PK__MasterAd__536C85E585B1CE8F");
-
-                entity.ToTable("MasterAdmin");
-
-                entity.Property(e => e.Username)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("ID");
-
-                entity.Property(e => e.Password)
-                    .HasMaxLength(60)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<MidAdmin>(entity =>
-            {
-                entity.HasKey(e => e.Username)
-                    .HasName("PK__MidAdmin__536C85E5E3FCC68E");
-
-                entity.ToTable("MidAdmin");
-
-                entity.Property(e => e.Username)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("ID");
-
-                entity.Property(e => e.Password)
-                    .HasMaxLength(60)
-                    .IsUnicode(false);
+                entity.Property(e => e.Lastname).HasMaxLength(20);
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -170,7 +116,9 @@ namespace BibliotekConsole.DBModels
 
                 entity.Property(e => e.BookedTime).HasColumnType("date");
 
-                entity.Property(e => e.CategoriesId).HasColumnName("CategoriesID");
+                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+
+                entity.Property(e => e.DirectorId).HasColumnName("DirectorID");
 
                 entity.Property(e => e.EVersion).HasColumnName("E_Version");
 
@@ -178,9 +126,11 @@ namespace BibliotekConsole.DBModels
                     .HasMaxLength(13)
                     .HasColumnName("ISBN");
 
-                entity.Property(e => e.ProductInfo).HasMaxLength(50);
+                entity.Property(e => e.ProductInfo).HasMaxLength(500);
 
-                entity.Property(e => e.ProductName).HasMaxLength(20);
+                entity.Property(e => e.ProductName).HasMaxLength(150);
+
+                entity.Property(e => e.ProductTypeId).HasColumnName("ProductTypeID");
 
                 entity.Property(e => e.ReleaseDate).HasColumnType("date");
 
@@ -189,24 +139,45 @@ namespace BibliotekConsole.DBModels
                     .HasForeignKey(d => d.AuthorId)
                     .HasConstraintName("FK_ProductsAuthor");
 
-                entity.HasOne(d => d.Categories)
+                entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.CategoriesId)
+                    .HasForeignKey(d => d.CategoryId)
+                    .HasConstraintName("FK_Category");
+
+                entity.HasOne(d => d.Director)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.DirectorId)
+                    .HasConstraintName("FK_ProductsDirector");
+
+                entity.HasOne(d => d.ProductType)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.ProductTypeId)
                     .HasConstraintName("FK_Products");
             });
 
             modelBuilder.Entity<ProductCategory>(entity =>
             {
+                entity.ToTable("ProductCategory");
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Category).HasMaxLength(15);
+                entity.Property(e => e.Category).HasMaxLength(24);
+            });
+
+            modelBuilder.Entity<ProductType>(entity =>
+            {
+                entity.ToTable("ProductType");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Type).HasMaxLength(15);
             });
 
             modelBuilder.Entity<ShoppingCart>(entity =>
             {
                 entity.ToTable("ShoppingCart");
 
-                entity.HasIndex(e => e.Id, "UQ__Shopping__3214EC2617609597")
+                entity.HasIndex(e => e.Id, "UQ__Shopping__3214EC265E5FD4F8")
                     .IsUnique();
 
                 entity.Property(e => e.Id)
@@ -233,7 +204,7 @@ namespace BibliotekConsole.DBModels
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Username)
-                    .HasName("PK__User__536C85E56A223BDE");
+                    .HasName("PK__User__536C85E5EBF575D2");
 
                 entity.ToTable("User");
 
@@ -258,6 +229,8 @@ namespace BibliotekConsole.DBModels
                 entity.Property(e => e.PhoneNumber).HasMaxLength(30);
 
                 entity.Property(e => e.PostalCode).HasMaxLength(30);
+
+                entity.Property(e => e.UserGroup).HasMaxLength(20);
             });
 
             OnModelCreatingPartial(modelBuilder);

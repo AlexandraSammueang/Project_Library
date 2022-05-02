@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BibliotekConsole.DBModels
+namespace BibliotekConsole.Models
 {
-    public partial class ProductCategory
+    public partial class Director
     {
-        public ProductCategory()
+        public Director()
         {
             Products = new HashSet<Product>();
         }
 
         public int Id { get; set; }
-        public string? Category { get; set; }
+        public string? Firstname { get; set; }
+        public string? Lastname { get; set; }
+        public DateTime? Birthday { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
     }

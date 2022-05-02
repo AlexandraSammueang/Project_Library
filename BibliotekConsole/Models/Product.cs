@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BibliotekConsole.DBModels
+namespace BibliotekConsole.Models
 {
     public partial class Product
     {
@@ -13,8 +13,10 @@ namespace BibliotekConsole.DBModels
 
         public int Id { get; set; }
         public int? AuthorId { get; set; }
+        public int? DirectorId { get; set; }
         public string? Isbn { get; set; }
-        public int? CategoriesId { get; set; }
+        public int? ProductTypeId { get; set; }
+        public int? CategoryId { get; set; }
         public string? ProductName { get; set; }
         public string? ProductInfo { get; set; }
         public DateTime? ReleaseDate { get; set; }
@@ -27,7 +29,9 @@ namespace BibliotekConsole.DBModels
         public double? Price { get; set; }
 
         public virtual Author? Author { get; set; }
-        public virtual ProductCategory? Categories { get; set; }
+        public virtual ProductCategory? Category { get; set; }
+        public virtual Director? Director { get; set; }
+        public virtual ProductType? ProductType { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
     }

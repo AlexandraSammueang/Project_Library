@@ -1,4 +1,4 @@
-﻿using BibliotekConsole.DBModels;
+﻿using BibliotekConsole.Models;
 using Dapper;
 using System.Data.SqlClient;
 
@@ -68,7 +68,7 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
                 string answer = Console.ReadLine();
                 if (!string.IsNullOrEmpty(answer) && !string.IsNullOrWhiteSpace(answer))
                 {
-                    using (var context = new BibliotekContext())
+                    using (var context = new LibraryDBContext())
                     {
                         var checkUsernameAvailability = context.Users.Where(x => x.Username == answer);
                         if (checkUsernameAvailability.Any())
@@ -166,7 +166,7 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
 
             if (user.Email != null)
             {
-                using (var context = new BibliotekContext())
+                using (var context = new LibraryDBContext())
                 {
                     context.Users.Add(user);
                     context.SaveChanges();
@@ -191,7 +191,7 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
             string userName = Console.ReadLine();
             bool isValid = false;
 
-            using (var context = new BibliotekContext())
+            using (var context = new LibraryDBContext())
             {
                 //    var isbnlist = new List<Product>();
                 //    using (var context = new BibliotekContext())
