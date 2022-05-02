@@ -1,4 +1,6 @@
 ﻿using BibliotekConsole.DBModels;
+using Dapper;
+using System.Data.SqlClient;
 
 namespace BibliotekConsole // Note: actual namespace depends on the project name.
 {
@@ -27,17 +29,17 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
             //    foreach (var item in listLINQ)
             //        Console.WriteLine(item.Isbn);
         }
-        //public static List<Product> GetISBNDapper()
-        //{
-        //    var ISBNList = new List<Product>();
-        //    var sql = "select isbn from Products";
-        //    using (var connection = new SqlConnection(connString))
-        //    {
-        //        connection.Open();
-        //        ISBNList = connection.Query<Product>(sql).ToList();
-        //    }
-        //    return ISBNList;
-        //}
+        public static List<Product> GetISBNDapper()
+        {
+            var ISBNList = new List<Product>();
+            var sql = "select isbn from Products";
+            using (var connection = new SqlConnection(connString))
+            {
+                connection.Open();
+                ISBNList = connection.Query<Product>(sql).ToList();
+            }
+            return ISBNList;
+        }
 
         //public static List<Product> GetISBNLINQ()
         //{
@@ -199,6 +201,7 @@ namespace BibliotekConsole // Note: actual namespace depends on the project name
                 //            Isbn = x.Isbn
                 //        }).ToList();
                 //    }
+
                 userPassword = context.Users.Where(x => x.Username == userName).Select(x => new User() { Password = x.Password }).ToList();
                 var usernameToCheck = context.Users.Where(x => x.Username == userName);
                 if (usernameToCheck.Any())
